@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
+// Initialize db connection pool
+
 // Middleware
 app.use(cors());
 app.use(express.json());
