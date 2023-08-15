@@ -1,54 +1,63 @@
 const express = require("express");
 const router = express.Router();
+const Contact = require("../../models/Contact");
 const db = require("../../config/db");
 
 // @route GET api/contact
 // @desc Retrieve contacts from the "contacts" table
+router.post("/", async (req, res) => {
+  try {
+    // Create the "contacts" table if it doesn't exist
+    await Contact.sync();
+
+    // Insert the dummy contact
+    await Contact.create({
+      name: "Dummy Contact",
+      email: "dummy@example.com",
+    });
+
+    res.json({ message: "Table created with dummy contact" });
+  } catch (error) {
+    console.error("Error creating table and dummy contact:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Retrieve all contacts from the "contacts" table
 router.get("/", async (req, res) => {
   try {
-    const selectQuery = "SELECT * FROM contacts";
-    const result = await db.query(selectQuery);
-    res.json(result.rows);
+    const contacts = await Contact.findAll();
+    res.json(contacts);
   } catch (error) {
     console.error("Error fetching contacts:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-router.post("/", async (req, res) => {
+router.get("/tables", async (req, res) => {
   try {
-    // Check if "contacts" table exists
-    const tableCheckQuery = `
-      SELECT EXISTS (
-        SELECT 1
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-        AND table_name = 'contacts'
-      );
+    const query = `
+      SELECT table_name
+      FROM information_schema.tables
+      WHERE table_schema = 'public';
     `;
+    const result = await db.query(query);
 
-    const tableExistsResult = await db.query(tableCheckQuery);
-    const tableExists = tableExistsResult.rows[0].exists;
-
-    if (!tableExists) {
-      const createTableQuery = `
-        CREATE TABLE contacts (
-          id serial PRIMARY KEY,
-          name VARCHAR(255) NOT NULL,
-          email VARCHAR(255) NOT NULL
-        );
-      `;
-      await db.query(createTableQuery);
-    }
-
-    // Insert the dummy contact
-    const insertQuery = "INSERT INTO contacts (name, email) VALUES ($1, $2)";
-    const values = ["Dummy Contact", "dummy@example.com"];
-    await db.query(insertQuery, values);
-
-    res.json({ message: "Table created with dummy contact" });
+    res.json({ result });
   } catch (error) {
-    console.error("Error creating table and dummy contact:", error);
+    console.error("Error fetching tables:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.delete("/", async (req, res) => {
+  try {
+    const deleteTableQuery = `
+      DROP TABLE IF EXISTS "Contacts";
+    `;
+    await db.query(deleteTableQuery);
+    res.json({ message: "Contacts table deleted" });
+  } catch (error) {
+    console.error("Error deleting Contacts table:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });

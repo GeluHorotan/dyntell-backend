@@ -1,18 +1,24 @@
-const { Pool } = require("pg");
+const { Sequelize } = require("sequelize");
 require("dotenv").config(); // Load environment variables from .env file
 
-const pool = new Pool({
+const sequelize = new Sequelize({
+  database: process.env.DB_NAME,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl: true,
+  dialect: "postgres",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // For self-signed certificates
+    },
+  },
 });
 
-pool.connect((err) => {
-  if (err) throw err;
-  console.log("Connect to PostgreSQL, succesfully!");
-});
+// sequelize.connect((err) => {
+//   if (err) throw err;
+//   console.log("Connect to PostgreSQL, succesfully!");
+// });
 
-module.exports = pool;
+module.exports = sequelize;
