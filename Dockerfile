@@ -5,7 +5,7 @@ FROM node:16-alpine
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY . / theapp
+COPY . /app
 
 # dependencies
 RUN npm install
