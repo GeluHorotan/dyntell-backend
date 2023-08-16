@@ -28,4 +28,4 @@ const Contact = sequelize.define("Contact", {
   },
 });
 
-module.exports = Contact;
+module.exports = { Contact };
