@@ -1,21 +1,30 @@
-// src/models/Contact.js
-
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db"); // Update the path to your db configuration
+const sequelize = require("../config/db");
 
 const Contact = sequelize.define("Contact", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+    allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  phone: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      isNumeric: true,
+    },
+  },
   email: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+    validate: {
+      isEmail: true,
+    },
   },
 });
 
