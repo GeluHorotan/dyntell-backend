@@ -6,9 +6,9 @@ const createContact = async (req, res) => {
   try {
     await Contact.sync();
     await Contact.create({
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
+      name: name,
+      email: email,
+      phone: phone,
     });
     res.json({
       message: `${req.body.name} was added succesfully to the contact list!`,
