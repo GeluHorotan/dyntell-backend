@@ -37,6 +37,40 @@ const getContacts = async (req, res) => {
   }
 };
 
+const editContact = async (req, res) => {
+  const { id } = req.params;
+  const { name, phone, email } = req.body;
+
+  try {
+    const contact = await Contact.findByPk(id);
+
+    if (!contact) {
+      return res.status(404).json({ error: "Contact not found!" });
+    }
+
+    if (name) contact.name = name;
+    if (phone) contact.phone = phone;
+    if (email) contact.email = email;
+
+    await contact.save();
+    res.json({ message: "Contact updated successfully" });
+  } catch (error) {
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errors = error.errors.map((err) => ({
+        field: err.path,
+        message: err.message,
+      }));
+      res.status(400).json({ errors });
+    } else {
+      console.error("Error updating contact:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+};
+
 const deleteContact = async (req, res) => {
   const { id } = req.params;
 
@@ -73,6 +107,7 @@ const dropContactTable = async (req, res) => {
 module.exports = {
   createContact,
   getContacts,
+  editContact,
   deleteContact,
   dropContactTable,
 };

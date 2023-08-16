@@ -10,6 +10,10 @@ router.get("/", contactController.getContacts);
 // @public
 router.post("/", contactController.createContact);
 
+// @desc Edit contact
+// @public
+router.put("/:id", contactController.editContact);
+
 // @desc Delete contact
 // @public
 router.delete("/delete/:id", contactController.deleteContact);
