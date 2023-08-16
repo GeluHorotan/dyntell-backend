@@ -11,19 +11,32 @@ const Contact = sequelize.define("Contact", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      isAlpha: {
+        msg: "Name should only contain letters.",
+      },
+    },
   },
   phone: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isNumeric: true,
+      isNumeric: {
+        msg: "Phone number should only contain digits.",
+      },
+      len: {
+        args: [10, 10], // Ensure the phone number has only 10 digits
+        msg: "Phone number should contain exactly 10 digits.",
+      },
     },
   },
   email: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
-      isEmail: true,
+      isEmail: {
+        msg: "Please enter a valid email address.",
+      },
     },
   },
 });
