@@ -1,11 +1,12 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db");
+const { v4: uuidv4 } = require("uuid");
 
 const Contact = sequelize.define("Contact", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
+    defaultValue: uuidv4, // Generate UUID for each new contact
     primaryKey: true,
-    autoIncrement: true,
     allowNull: false,
   },
   name: {
@@ -15,6 +16,9 @@ const Contact = sequelize.define("Contact", {
       isAlpha: {
         msg: "Name should only contain letters.",
       },
+    },
+    unique: {
+      msg: "Name already exists.",
     },
   },
   phone: {
@@ -29,6 +33,9 @@ const Contact = sequelize.define("Contact", {
         msg: "Phone number should contain exactly 10 digits.",
       },
     },
+    unique: {
+      msg: "Phone number already exists.",
+    },
   },
   email: {
     type: DataTypes.STRING,
@@ -37,6 +44,9 @@ const Contact = sequelize.define("Contact", {
       isEmail: {
         msg: "Please enter a valid email address.",
       },
+    },
+    unique: {
+      msg: "Email already exists.",
     },
   },
 });
