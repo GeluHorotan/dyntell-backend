@@ -26,7 +26,7 @@ const createContact = async (req, res) => {
 
 const getContacts = async (req, res) => {
   try {
-    const contacts = await Contact.findAll();
+    const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
 
     if (!contacts || contacts.length === 0)
       res.status(404).json({ error: "Contact not found!" });

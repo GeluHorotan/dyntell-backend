@@ -13,8 +13,10 @@ const Contact = sequelize.define("Contact", {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isAlpha: {
-        msg: "Name should only contain letters.",
+      is: /^[a-zA-Z\s]*$/, // Allow letters and spaces only
+      len: {
+        args: [1, 15],
+        msg: "Name should have at most 15 characters.",
       },
     },
     unique: {
