@@ -136,17 +136,6 @@ const deleteContact = async (req, res) => {
   }
 };
 
-const dropContactTable = async (req, res) => {
-  try {
-    // Drop the "Contact" table
-    await Contact.drop();
-
-    res.json({ message: "Contact table dropped successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
-
 module.exports = {
   createContact,
   getContacts,

@@ -18,6 +18,4 @@ router.put("/:id", contactController.editContact);
 // @public
 router.delete("/delete/:id", contactController.deleteContact);
 
-router.delete("/table", contactController.dropContactTable);
-
 module.exports = router;
