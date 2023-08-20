@@ -12,7 +12,7 @@ const createContact = async (req, res) => {
     await Contact.sync();
     await Contact.create({
       name: capitalizedFullName,
-      email: email,
+      email: email ? email : null,
       phone: phone,
     });
     const contacts = await Contact.findAll({ order: [["name", "ASC"]] });

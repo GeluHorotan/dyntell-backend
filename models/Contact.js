@@ -47,7 +47,7 @@ const Contact = sequelize.define("Contact", {
         msg: "The email must be a valid email.",
       },
       len: {
-        args: [3, 30],
+        args: [0, 30],
         msg: "The email must have between 3-30 characters!",
       },
     },
