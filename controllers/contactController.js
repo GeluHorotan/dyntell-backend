@@ -1,13 +1,17 @@
 const { Contact } = require("../models/Contact");
+const { capitalizeWords } = require("../utils/capitalizeWords");
+
 const { Op } = require("sequelize");
 
 const createContact = async (req, res) => {
   const { name, email, phone } = req.body;
 
+  const capitalizedFullName = capitalizeWords(name);
+
   try {
     await Contact.sync();
     await Contact.create({
-      name: name,
+      name: capitalizedFullName,
       email: email,
       phone: phone,
     });
@@ -21,12 +25,19 @@ const createContact = async (req, res) => {
 
     res.json(contacts);
   } catch (error) {
-    const errors = error.errors.map((err) => ({
-      field: err.path,
-      message: err.message,
-    }));
-
-    res.status(400).json({ errors });
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.name === "SequelizeUniqueConstraintError"
+    ) {
+      const errors = error.errors.map((err) => ({
+        field: err.path,
+        message: err.message,
+      }));
+      res.status(400).json({ errors });
+    } else {
+      console.error("Error creating the contact:", error);
+      res.status(500).json({ errors: [{ message: "Internal server error" }] });
+    }
   }
 };
 
@@ -49,7 +60,7 @@ const getContacts = async (req, res) => {
 const editContact = async (req, res) => {
   const { id } = req.params;
   const { name, phone, email } = req.body;
-
+  const capitalizedFullName = capitalizeWords(name);
   try {
     const contact = await Contact.findByPk(id);
 
@@ -59,7 +70,7 @@ const editContact = async (req, res) => {
         .json({ errors: [{ message: "Contact not found!" }] });
     }
 
-    if (name) contact.name = name;
+    if (name) contact.name = capitalizedFullName;
     if (phone) contact.phone = phone;
     if (email) contact.email = email;
 

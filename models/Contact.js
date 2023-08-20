@@ -15,12 +15,12 @@ const Contact = sequelize.define("Contact", {
     validate: {
       is: /^[a-zA-Z\s]*$/, // Allow letters and spaces only
       len: {
-        args: [1, 15],
-        msg: "Name should have at most 15 characters.",
+        args: [3, 20],
+        msg: "The name must have between 3-20 characters!",
       },
     },
     unique: {
-      msg: "Name already exists.",
+      msg: "The name already exists.",
     },
   },
   phone: {
@@ -28,15 +28,15 @@ const Contact = sequelize.define("Contact", {
     allowNull: false,
     validate: {
       isNumeric: {
-        msg: "Phone number should only contain digits.",
+        msg: "The phone number must contain only digits.",
       },
       len: {
-        args: [10, 10], // Ensure the phone number has only 10 digits
-        msg: "Phone number should contain exactly 10 digits.",
+        args: [10, 15],
+        msg: "The phone number must have between 10-15 digits.",
       },
     },
     unique: {
-      msg: "Phone number already exists.",
+      msg: "The phone number already exists.",
     },
   },
   email: {
@@ -44,11 +44,15 @@ const Contact = sequelize.define("Contact", {
     allowNull: true,
     validate: {
       isEmail: {
-        msg: "Please enter a valid email address.",
+        msg: "The email must be a valid email.",
+      },
+      len: {
+        args: [3, 30],
+        msg: "The email must have between 3-30 characters!",
       },
     },
     unique: {
-      msg: "Email already exists.",
+      msg: "The email already exists.",
     },
   },
 });
