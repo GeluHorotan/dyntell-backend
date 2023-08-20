@@ -11,9 +11,12 @@ const createContact = async (req, res) => {
       email: email,
       phone: phone,
     });
-    res.json({
-      message: `${req.body.name} was added succesfully to the contact list!`,
-    });
+    const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
+
+    if (!contacts || contacts.length === 0)
+      res.status(404).json({ error: "Contacts not found!" });
+
+    res.json(contacts);
   } catch (error) {
     const errors = error.errors.map((err) => ({
       field: err.path,
@@ -29,7 +32,7 @@ const getContacts = async (req, res) => {
     const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
 
     if (!contacts || contacts.length === 0)
-      res.status(404).json({ error: "Contact not found!" });
+      res.status(404).json({ error: "Contacts not found!" });
 
     res.json(contacts);
   } catch (error) {
@@ -53,7 +56,13 @@ const editContact = async (req, res) => {
     if (email) contact.email = email;
 
     await contact.save();
-    res.json({ message: "Contact updated successfully" });
+
+    const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
+
+    if (!contacts || contacts.length === 0)
+      res.status(404).json({ error: "Contacts not found!" });
+
+    res.json(contacts);
   } catch (error) {
     if (
       error.name === "SequelizeValidationError" ||
@@ -86,7 +95,13 @@ const deleteContact = async (req, res) => {
       return res.status(404).json({ error: "Contact not found." });
     }
     await contact.destroy();
-    res.json({ message: "Contact deleted successfully." });
+
+    const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
+
+    if (!contacts || contacts.length === 0)
+      res.status(404).json({ error: "Contacts not found!" });
+
+    res.json(contacts);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Server error." });
