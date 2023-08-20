@@ -13,8 +13,11 @@ const createContact = async (req, res) => {
     });
     const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
 
-    if (!contacts || contacts.length === 0)
-      res.status(404).json({ error: "Contacts not found!" });
+    if (!contacts || contacts.length === 0) {
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Contacts not found!" }] });
+    }
 
     res.json(contacts);
   } catch (error) {
@@ -31,12 +34,15 @@ const getContacts = async (req, res) => {
   try {
     const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
 
-    if (!contacts || contacts.length === 0)
-      res.status(404).json({ error: "Contacts not found!" });
+    if (!contacts || contacts.length === 0) {
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Contacts not found!" }] });
+    }
 
     res.json(contacts);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ errors: [{ message: "Server error." }] });
   }
 };
 
@@ -48,7 +54,9 @@ const editContact = async (req, res) => {
     const contact = await Contact.findByPk(id);
 
     if (!contact) {
-      return res.status(404).json({ error: "Contact not found!" });
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Contact not found!" }] });
     }
 
     if (name) contact.name = name;
@@ -59,8 +67,11 @@ const editContact = async (req, res) => {
 
     const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
 
-    if (!contacts || contacts.length === 0)
-      res.status(404).json({ error: "Contacts not found!" });
+    if (!contacts || contacts.length === 0) {
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Contacts not found!" }] });
+    }
 
     res.json(contacts);
   } catch (error) {
@@ -69,13 +80,14 @@ const editContact = async (req, res) => {
       error.name === "SequelizeUniqueConstraintError"
     ) {
       const errors = error.errors.map((err) => ({
+        contactID: id,
         field: err.path,
         message: err.message,
       }));
       res.status(400).json({ errors });
     } else {
       console.error("Error updating contact:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ errors: [{ message: "Internal server error" }] });
     }
   }
 };
@@ -92,19 +104,24 @@ const deleteContact = async (req, res) => {
       },
     });
     if (!contact) {
-      return res.status(404).json({ error: "Contact not found." });
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Contact not found." }] });
     }
     await contact.destroy();
 
     const contacts = await Contact.findAll({ order: [["name", "ASC"]] });
 
-    if (!contacts || contacts.length === 0)
-      res.status(404).json({ error: "Contacts not found!" });
+    if (!contacts || contacts.length === 0) {
+      return res
+        .status(404)
+        .json({ errors: [{ message: "Contacts not found!" }] });
+    }
 
     res.json(contacts);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Server error." });
+    res.status(500).json({ errors: [{ message: "Server error." }] });
   }
 };
 
