@@ -141,5 +141,4 @@ module.exports = {
   getContacts,
   editContact,
   deleteContact,
-  dropContactTable,
 };
