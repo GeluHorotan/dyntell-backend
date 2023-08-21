@@ -4,8 +4,15 @@ const cors = require("cors");
 
 // Initialize db connection pool
 
+// Initialize CORS options
+const corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+  optionsSuccessStatus: 200,
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/api/contact", require("./routes/api/contact"));
